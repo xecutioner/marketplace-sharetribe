@@ -7,16 +7,20 @@ ThinkingSphinx::Index.define :listing, :with => :active_record, :delta => Thinki
   set_property :utf8? => true
 
   # limit to open listings
-  where "open = '1' AND deleted = '0' AND (valid_until IS NULL OR valid_until > now())"
+  where "open = '1' AND (valid_until IS NULL OR valid_until > now())"
 
   # fields
   indexes title
   indexes description
+  indexes author_id
+  indexes author.given_name
+  indexes author.family_name
   indexes custom_field_values(:text_value), :as => :custom_text_fields
   indexes origin_loc.google_address
 
   # attributes
   has id, :as => :listing_id # id didn't work without :as aliasing
+  belongs_to author
   has price_cents
   has created_at, updated_at
   has sort_date
